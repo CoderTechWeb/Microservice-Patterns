@@ -22,6 +22,6 @@ public class InventoryService {
 
     private boolean checkStockAvailability() {
 
-        return true;
+        return false;
     }
 }
