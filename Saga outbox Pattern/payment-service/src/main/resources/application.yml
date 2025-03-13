@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: payment-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/order
+    username: postgres
+    password: postgres
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: order-group
+    listener:
+      concurrency: 3
+
+server:
+  port: 8083
