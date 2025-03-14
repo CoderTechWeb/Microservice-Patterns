@@ -1,4 +1,4 @@
-package com.techweb.orderservice.entity;
+package com.techweb.inventoryservice.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

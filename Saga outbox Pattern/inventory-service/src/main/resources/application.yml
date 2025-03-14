@@ -10,9 +10,23 @@ spring:
     url: jdbc:postgresql://localhost:5432/order
     username: postgres
     password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
       group-id: order-group
-    listener:
-      concurrency: 3
+      producer:
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    logging:
+      level:
+        org.springframework: INFO
+
+scheduler:
+  outbox:
+    interval: 5000

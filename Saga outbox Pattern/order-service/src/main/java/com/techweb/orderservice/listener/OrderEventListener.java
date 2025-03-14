@@ -1,29 +1,29 @@
 package com.techweb.orderservice.listener;
 
-import com.techweb.orderservice.entity.Order;
-import com.techweb.orderservice.repository.OrderRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.techweb.orderservice.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class OrderEventListener {
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderService orderService;
 
-    @KafkaListener(topics = "payment-response", groupId = "order-group")
-    public void processPaymentResponse(String message){
-        String[] data = message.split(":");
-        Long orderId = Long.parseLong(data[0]);
-        String status = data[1];
+    @KafkaListener(topics = "inventory-check-processed", groupId = "order-group")
+    public void listenOrderStatusUpdate(String message) {
+        try {
+            String[] parts = message.split(":");  // Example message: "orderId:12345:SUCCESS"
+            Long orderId = Long.parseLong(parts[0]);
+            String status = parts[1];
 
-        Order order = orderRepository.findById(orderId).orElseThrow();
-        if ("FAILED".equals(status)) {
-            order.setStatus("CANCELLED");
-        } else {
-            order.setStatus("COMPLETED");
+            orderService.updateOrderStatus(orderId, status);
+
+        } catch (Exception e) {
+            //log.error("Error processing order status update event", e);
         }
-        orderRepository.save(order);
     }
 }

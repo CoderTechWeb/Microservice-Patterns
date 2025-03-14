@@ -16,13 +16,10 @@ public class OutboxEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private String aggregateId;
     private String eventType;
     private String payload;
     private boolean processed = false;
     
     @CreationTimestamp
     private LocalDateTime createdAt;
-    
-    // getters and setters
 }

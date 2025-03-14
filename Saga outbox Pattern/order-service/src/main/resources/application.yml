@@ -1,6 +1,10 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: order-service
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/order
@@ -9,7 +13,18 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
   kafka:
-    bootstrap-servers: localhost:9092
-server:
-  port: 8081
+    bootstrap-servers: localhost:9092  # Ensure Kafka is running here
+    consumer:
+      group-id: order-group  # Specify the consumer group for Order service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # Key deserializer for the message
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer  # Value deserializer for the message
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer  # Key serializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer  # Value serializer
+
+scheduler:
+  outbox:
+    interval: 5000  # Poll every 5 seconds
+

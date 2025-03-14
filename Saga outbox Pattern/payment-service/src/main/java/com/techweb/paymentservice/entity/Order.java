@@ -1,11 +1,9 @@
-package com.techweb.orderservice.entity;
+package com.techweb.paymentservice.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Entity
 @Data
-@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
