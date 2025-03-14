@@ -40,6 +40,6 @@ public class PaymentService {
     }
 
     private boolean processPayment(Long orderId) {
-        return true; // Simulate successful payment
+        return true;
     }
 }

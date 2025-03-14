@@ -31,7 +31,6 @@ public class OutboxPoller {
                 event.setProcessed(true);
                 outboxRepository.save(event);
             } catch (Exception e) {
-                // Handle failure to send to Kafka
             }
         }
     }
