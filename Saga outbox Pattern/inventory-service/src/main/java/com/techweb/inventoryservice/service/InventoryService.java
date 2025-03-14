@@ -45,6 +45,6 @@ public class InventoryService {
     }
 
     private boolean checkStockAvailability(Long orderId) {
-        return true; // Simulating stock check logic
+        return true;
     }
 }

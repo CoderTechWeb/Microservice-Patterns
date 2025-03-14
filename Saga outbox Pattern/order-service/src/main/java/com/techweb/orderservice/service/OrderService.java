@@ -26,7 +26,7 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(Order order) {
-        order.setStatus("PENDING");
+        order.setStatus("CREATED");
         orderRepository.save(order);
 
         saveOutboxEvent("order-created", order);
@@ -50,7 +50,6 @@ public class OrderService {
             OutboxEvent event = new OutboxEvent();
             event.setEventType(eventType);
             event.setPayload(objectMapper.writeValueAsString(order));
-            event.setProcessed(false);
             outboxRepository.save(event);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to serialize order event", e);
