@@ -2,15 +2,33 @@ package com.techweb.inventoryservice.service;
 
 import com.techweb.inventoryservice.entity.Inventory;
 import com.techweb.inventoryservice.repository.InventoryRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class InventoryService {
     @Autowired
     private InventoryRepository inventoryRepository;
+
+    @PostConstruct
+    public void initInventory() {
+        if (inventoryRepository.count() == 0) { // Avoid duplicate inserts
+            List<Inventory> inventoryList = Arrays.asList(
+                    new Inventory(null, "Laptop", 10),
+                    new Inventory(null, "Mouse", 20),
+                    new Inventory(null, "Mobile", 15),
+                    new Inventory(null, "TV", 30)
+            );
+
+            inventoryRepository.saveAll(inventoryList);
+            System.out.println("✅ Dummy Inventory Data Initialized!");
+        }
+    }
 
     public boolean checkStock(String productCode, int quantity) {
         Optional<Inventory> inventoryOpt = inventoryRepository.findByProductCode(productCode);
@@ -26,7 +44,7 @@ public class InventoryService {
                 inventoryRepository.save(inventory);
                 return "Stock Reserved for Product: " + productCode;
             }
-            return "Insufficient Stock for Product: " + productCode;
+            throw new RuntimeException("Insufficient Stock for Product: " + productCode);
         }
         return "Product Not Found: " + productCode;
     }

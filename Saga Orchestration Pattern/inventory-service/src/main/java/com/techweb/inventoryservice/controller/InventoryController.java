@@ -21,11 +21,11 @@ public class InventoryController {
 
     @PostMapping("/reserve")
     public ResponseEntity<String> reserveStock(@RequestBody InventoryRequest request) {
-        return ResponseEntity.ok(inventoryService.reserveStock(request.getProductCode(), request.getQuantity()));
+        return ResponseEntity.ok(inventoryService.reserveStock(request.getProduct(), request.getQuantity()));
     }
 
     @PostMapping("/release")
     public ResponseEntity<String> releaseStock(@RequestBody InventoryRequest request) {
-        return ResponseEntity.ok(inventoryService.releaseStock(request.getProductCode(), request.getQuantity()));
+        return ResponseEntity.ok(inventoryService.releaseStock(request.getProduct(), request.getQuantity()));
     }
 }

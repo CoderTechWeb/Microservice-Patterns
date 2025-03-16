@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class OrderSagaOrchestrator {
+public class OrderService {
     @Autowired
     private RestTemplate restTemplate;
 
@@ -21,7 +21,7 @@ public class OrderSagaOrchestrator {
         orderRepository.save(order);
 
         // API Gateway URL
-        String API_GATEWAY_URL = "http://api-gateway/";
+        String API_GATEWAY_URL = "http://localhost:9000/";
         try {
             // Step 1: Process Payment
             restTemplate.postForEntity(API_GATEWAY_URL + "/payment/process",

@@ -15,9 +15,13 @@ public class PaymentService {
 
     public String processPayment(PaymentRequest request) {
         Payment payment = new Payment();
+        if (request.getAmount() > 1000) { // Simulating insufficient funds
+            throw new RuntimeException("Payment declined due to insufficient funds");
+        }
         payment.setOrderId(request.getOrderId());
         payment.setAmount(request.getAmount());
-        payment.setStatus("SUCCESS"); // Assume payment succeeds
+
+        payment.setStatus("SUCCESS");
 
         paymentRepository.save(payment);
         return "Payment Processed Successfully for Order ID: " + request.getOrderId();

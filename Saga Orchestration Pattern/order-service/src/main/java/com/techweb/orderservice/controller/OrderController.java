@@ -1,7 +1,7 @@
 package com.techweb.orderservice.controller;
 
 import com.techweb.orderservice.entity.Order;
-import com.techweb.orderservice.service.OrderSagaOrchestrator;
+import com.techweb.orderservice.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/order")
 public class OrderController {
     @Autowired
-    private OrderSagaOrchestrator sagaOrchestrator;
+    private OrderService sagaOrchestrator;
 
     @PostMapping("/create")
     public ResponseEntity<String> createOrder(@RequestBody Order order) {
