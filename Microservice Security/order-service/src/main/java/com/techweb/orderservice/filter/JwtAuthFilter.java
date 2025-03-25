@@ -49,8 +49,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        } catch (ExpiredJwtException e) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "JWT Token has expired");
+            return;
+        } catch (MalformedJwtException | SignatureException e) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
+            return;
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "JWT Authentication failed");
             return;
         }
 
@@ -74,7 +80,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY)); // Ensure Base64 decoding
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, HttpServletResponse response) throws IOException {
         try {
             Claims claims = getClaims(token);
             if (claims.getExpiration().before(new Date())) {
@@ -83,15 +89,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
             return true;
         } catch (ExpiredJwtException e) {
-            System.out.println("JWT Token Expired: " + e.getMessage());
-        } catch (MalformedJwtException e) {
-            System.out.println("Invalid JWT Token: " + e.getMessage());
-        } catch (SignatureException e) {
-            System.out.println("JWT Signature does not match: " + e.getMessage());
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "JWT Token has expired");
+        } catch (MalformedJwtException | SignatureException e) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
         } catch (Exception e) {
-            System.out.println("JWT Token validation failed: " + e.getMessage());
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "JWT Authentication failed");
         }
         return false;
+    }
+
+    private void sendErrorResponse(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.getWriter().write("{ \"status\": " + status + ", \"error\": \"" + message + "\" }");
+        response.getWriter().flush();
     }
 }
 
