@@ -1,0 +1,4 @@
+/Users/sureshnarayanaswamygowda/Documents/Practice Hub/Microservice-Patterns/Reselience/api-gateway/src/main/java/com/techweb/apigateway/ApiGatewayApplication.java
+/Users/sureshnarayanaswamygowda/Documents/Practice Hub/Microservice-Patterns/Reselience/api-gateway/src/main/java/com/techweb/apigateway/config/ApiGatewayConfig.java
+/Users/sureshnarayanaswamygowda/Documents/Practice Hub/Microservice-Patterns/Reselience/api-gateway/src/main/java/com/techweb/apigateway/config/Resilience4jConfig.java
+/Users/sureshnarayanaswamygowda/Documents/Practice Hub/Microservice-Patterns/Reselience/api-gateway/src/main/java/com/techweb/apigateway/controller/FallbackController.java

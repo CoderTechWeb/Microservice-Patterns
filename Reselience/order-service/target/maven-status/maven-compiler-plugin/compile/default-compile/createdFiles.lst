@@ -1,0 +1,8 @@
+com/techweb/orderservice/repository/OrderRepository.class
+com/techweb/orderservice/entity/Order.class
+com/techweb/orderservice/service/OrderSagaOrchestrator.class
+com/techweb/orderservice/controller/OrderController.class
+com/techweb/orderservice/dto/PaymentRequest.class
+com/techweb/orderservice/dto/InventoryRequest.class
+com/techweb/orderservice/config/RestTemplateConfig.class
+com/techweb/orderservice/OrderServiceApplication.class
