@@ -2,6 +2,7 @@ package com.techweb.apigateway.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -19,7 +20,7 @@ import java.security.Key;
 @Component
 public class JwtAuthFilter implements GatewayFilter {
 
-    private static final String SECRET_KEY = "YourSuperSecretKeyWithAtLeast256BitsLong12345"; // Use a long, secure key
+    private static final String SECRET_KEY = "1hr6UcUYZXletjebwPukzzn+we3ghVwanU79vbmwNSY="; // Use a long, secure key
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -39,7 +40,9 @@ public class JwtAuthFilter implements GatewayFilter {
                     .getBody();
 
             // Extract username and set it as a request attribute (optional)
-            exchange.getRequest().mutate().header("X-User", claims.getSubject()).build();
+            exchange.getRequest().mutate()
+                    .header(HttpHeaders.AUTHORIZATION, authHeader)
+                    .build();
 
         } catch (Exception e) {
             return this.onError(exchange, "Invalid JWT Token", HttpStatus.UNAUTHORIZED);
@@ -49,7 +52,8 @@ public class JwtAuthFilter implements GatewayFilter {
     }
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private Mono<Void> onError(ServerWebExchange exchange, String message, HttpStatus status) {

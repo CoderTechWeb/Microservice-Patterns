@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "YourSuperSecretKeyWithAtLeast256BitsLong12345"; // Replace with a long, secure key
+    private static final String SECRET_KEY = "1hr6UcUYZXletjebwPukzzn+we3ghVwanU79vbmwNSY="; // Replace with a long, secure key
 
     // Generate token for a user
     public String generateToken(UserDetails userDetails) {
