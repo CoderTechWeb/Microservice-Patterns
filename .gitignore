@@ -22,3 +22,13 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+*.DS_Store
+*.gitignore
+*.xml
+
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/codeStyles/
+Saga outbox Pattern/.DS_Store
+Saga Pattern/.DS_Store

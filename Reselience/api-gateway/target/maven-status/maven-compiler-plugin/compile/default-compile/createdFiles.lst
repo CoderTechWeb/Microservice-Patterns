@@ -1,0 +1,4 @@
+com/techweb/apigateway/ApiGatewayApplication.class
+com/techweb/apigateway/config/ApiGatewayConfig.class
+com/techweb/apigateway/controller/FallbackController.class
+com/techweb/apigateway/config/Resilience4jConfig.class
