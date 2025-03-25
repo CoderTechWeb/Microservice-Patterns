@@ -27,18 +27,13 @@ public class OrderService {
             restTemplate.postForEntity(API_GATEWAY_URL + "/payment/process",
                 new PaymentRequest(order.getId(), order.getPrice()), String.class);
 
-            // Step 2: Reserve Inventory
-            restTemplate.postForEntity(API_GATEWAY_URL + "/inventory/reserve",
-                new InventoryRequest(order.getId(), order.getProduct(), order.getQuantity()), String.class);
+
 
             // Step 3: Mark Order as Completed
             order.setStatus("COMPLETED");
         } catch (Exception e) {
             order.setStatus("FAILED");
 
-            // Compensating Action: Refund Payment
-            restTemplate.postForEntity(API_GATEWAY_URL + "/payment/refund?orderId=" + order.getId(),
-                null, String.class);
         }
 
         orderRepository.save(order);

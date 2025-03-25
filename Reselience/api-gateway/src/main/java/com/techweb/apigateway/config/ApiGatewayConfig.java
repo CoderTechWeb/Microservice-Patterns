@@ -11,12 +11,15 @@ public class ApiGatewayConfig {
     @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-            .route("order-service", r -> r.path("/order/**")
-                .uri("lb://ORDER-SERVICE"))
-            .route("payment-service", r -> r.path("/payment/**")
-                .uri("lb://PAYMENT-SERVICE"))
-            .route("inventory-service", r -> r.path("/inventory/**")
-                .uri("lb://INVENTORY-SERVICE"))
+                .route("order-service", r -> r.path("/order/**")
+                        .filters(f -> f.circuitBreaker(c -> c.setName("orderServiceCB")
+                                .setFallbackUri("forward:/fallback/orderFallback"))) // Fallback method
+                        .uri("lb://ORDER-SERVICE"))
+
+                .route("payment-service", r -> r.path("/payment/**")
+                        .filters(f -> f.circuitBreaker(c -> c.setName("paymentServiceCB")
+                                .setFallbackUri("forward:/fallback/paymentFallback"))) // Fallback method
+                        .uri("lb://PAYMENT-SERVICE"))
             .build();
     }
 }
