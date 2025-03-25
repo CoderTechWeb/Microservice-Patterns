@@ -1,6 +1,5 @@
 package com.techweb.orderservice.filter;
 
-import com.techweb.orderservice.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,10 +16,10 @@ import java.util.ArrayList;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    private final JwtAuthFilter jwtAuthFilter;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
+    public JwtAuthenticationFilter(JwtAuthFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
     }
 
     @Override
@@ -35,9 +34,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        if (jwtUtil.validateToken(token)) {
+        if (jwtAuthFilter.validateToken(token)) {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    jwtUtil.extractUsername(token), null, new ArrayList<>()
+                    jwtAuthFilter.extractUsername(token), null, new ArrayList<>()
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
