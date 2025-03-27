@@ -1,6 +1,7 @@
 package com.techweb.authservice.config;
 
 import com.techweb.authservice.service.UserService;
+import com.techweb.authservice.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -45,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String username = null;
 
         try {
-            username = jwtUtil.extractUsername(token);
+            username = jwtUtil.extractUsername(token, jwtUtil.SECRET_KEY);
         } catch (ExpiredJwtException e) {
             logger.warn("JWT Token has expired");
         } catch (MalformedJwtException | SignatureException e) {

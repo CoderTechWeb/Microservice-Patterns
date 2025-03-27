@@ -1,6 +1,6 @@
 package com.techweb.authservice.controller;
 
-import com.techweb.authservice.config.JwtUtil;
+import com.techweb.authservice.util.JwtUtil;
 import com.techweb.authservice.model.AuthRequest;
 import com.techweb.authservice.model.AuthResponse;
 import com.techweb.authservice.service.UserService;
@@ -33,4 +33,16 @@ public class AuthController {
 
         return ResponseEntity.ok(new AuthResponse(token));
     }
+
+    /*@PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest refreshRequest) {
+        String refreshToken = refreshRequest.getRefreshToken();
+        if (jwtUtil.validateRefreshToken(refreshToken)) {
+            String username = jwtUtil.extractUsername(refreshToken);
+            UserDetails userDetails = userService.loadUserByUsername(username);
+            String newAccessToken = jwtUtil.generateToken(userDetails);
+            return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshToken));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+    }*/
 }
