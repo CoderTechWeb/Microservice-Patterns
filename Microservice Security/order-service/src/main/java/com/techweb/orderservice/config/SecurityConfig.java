@@ -17,10 +17,11 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/order/**").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/order/admin/**").hasRole("ADMIN")  // ✅ Only ADMIN
+                        .requestMatchers("/order/user/**").hasRole("USER")    // ✅ Only USER
+                        .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtAuthFilter), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }

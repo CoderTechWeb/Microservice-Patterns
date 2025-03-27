@@ -11,8 +11,10 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -21,7 +23,13 @@ public class JwtUtil {
 
     // Generate token for a user
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        Map<String, Object> claims = new HashMap<>();
+
+        // Store roles in JWT **without** "ROLE_" prefix
+        claims.put("roles", userDetails.getAuthorities().stream()
+                .map(authority -> authority.getAuthority().replace("ROLE_", "")) // ✅ Remove "ROLE_" from DB roles
+                .collect(Collectors.toList()));
+        return generateToken(claims, userDetails);
     }
 
     // Generate token with extra claims
@@ -72,6 +80,13 @@ public class JwtUtil {
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
+
+    // Extract roles from token
+    public List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("roles", List.class); // Extract roles from JWT claim
+    }
+
 
     // Get signing key
     private Key getSigningKey() {
