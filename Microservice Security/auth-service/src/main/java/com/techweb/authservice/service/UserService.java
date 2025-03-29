@@ -1,11 +1,14 @@
 package com.techweb.authservice.service;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import com.techweb.authservice.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -24,7 +27,7 @@ public class UserService implements UserDetailsService {
         return User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword()) // BCrypt encoded password
-                .roles(user.getRole().replace("ROLE_", "")) // Remove ROLE_ prefix
+                .authorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole()))) // Use proper role format
                 .build();
     }
 }
