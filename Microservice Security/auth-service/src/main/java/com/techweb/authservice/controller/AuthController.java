@@ -1,9 +1,11 @@
 package com.techweb.authservice.controller;
 
+import com.techweb.authservice.model.RefreshRequest;
 import com.techweb.authservice.util.JwtUtil;
 import com.techweb.authservice.model.AuthRequest;
 import com.techweb.authservice.model.AuthResponse;
 import com.techweb.authservice.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,19 +32,20 @@ public class AuthController {
 
         UserDetails userDetails = userService.loadUserByUsername(request.getUsername());
         String token = jwtUtil.generateToken(userDetails);
+        String refreshToken = jwtUtil.generateRefreshToken(userDetails);
 
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(new AuthResponse(token, refreshToken));
     }
 
-    /*@PostMapping("/refresh")
+    @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest refreshRequest) {
         String refreshToken = refreshRequest.getRefreshToken();
         if (jwtUtil.validateRefreshToken(refreshToken)) {
-            String username = jwtUtil.extractUsername(refreshToken);
+            String username = jwtUtil.extractUsername(refreshToken, JwtUtil.REFRESH_SECRET_KEY);
             UserDetails userDetails = userService.loadUserByUsername(username);
             String newAccessToken = jwtUtil.generateToken(userDetails);
             return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshToken));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-    }*/
+    }
 }

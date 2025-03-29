@@ -16,6 +16,19 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 10443706616-mtn5sterqtqlhsjnsbd9sf8l8gnibuev.apps.googleusercontent.com
+            client-secret: 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
+            scope: profile,email
+          github:
+            client-id: Ov23liVOasBkCb9brHfb
+            client-secret: f58cc730e8a844ba12e1d26a70a2cb6980deedf4
+            scope: user:email
+
 eureka:
   client:
     register-with-eureka: true
