@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.List;
 
 @Component
 public class JwtAuthFilter implements GatewayFilter {
@@ -39,10 +40,16 @@ public class JwtAuthFilter implements GatewayFilter {
                     .parseClaimsJws(token)
                     .getBody();
 
-            // Extract username and set it as a request attribute (optional)
+            String username = claims.getSubject();
+            List<String> roles = claims.get("roles", List.class); // ✅ Extract roles
+
+            // ✅ Forward roles in headers for microservices
             exchange.getRequest().mutate()
                     .header(HttpHeaders.AUTHORIZATION, authHeader)
+                    .header("X-User", username)
+                    .header("X-Roles", String.join(",", roles)) // Pass roles for internal use
                     .build();
+
 
         } catch (Exception e) {
             return this.onError(exchange, "Invalid JWT Token", HttpStatus.UNAUTHORIZED);
@@ -50,6 +57,7 @@ public class JwtAuthFilter implements GatewayFilter {
 
         return chain.filter(exchange);
     }
+
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
