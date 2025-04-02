@@ -1,15 +1,11 @@
 package com.techweb.authservice.util;
 
-import com.techweb.authservice.model.User;
-import com.techweb.authservice.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -22,9 +18,6 @@ public class JwtUtil {
 
     public static final String SECRET_KEY = "1hr6UcUYZXletjebwPukzzn+we3ghVwanU79vbmwNSY="; // For access tokens
     public static final String REFRESH_SECRET_KEY = "xLoVdnjoyqDp4JS9pxcGC6OfmHv/6Pczw7D6g1OahPg="; // For refresh tokens
-
-    @Autowired
-    public UserRepository userRepository;
 
     // Generate Access Token (short-lived)
     public String generateToken(UserDetails userDetails) {
@@ -40,7 +33,7 @@ public class JwtUtil {
         return generateToken(new HashMap<>(), userDetails, REFRESH_SECRET_KEY, 604800000); // 7 days expiry
     }
 
-    // Generic Token Generator
+    // Generic Token Generator for JWT
     private String generateToken(Map<String, Object> claims, UserDetails userDetails, String key, long expiration) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -54,7 +47,7 @@ public class JwtUtil {
     //Generic Token by Oauth 2
     public String generateToken(String email, String role) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("roles", Collections.singletonList(role.replace("ROLE_", ""))); // Ensure role format is correct
+        claims.put("roles", Collections.singletonList(role.replace("ROLE_", "")));
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -105,11 +98,6 @@ public class JwtUtil {
     private boolean isTokenExpired(String token, String key) {
         return extractExpiration(token, key).before(new Date());
     }
-    public List<String> extractRoles(String token) {
-        Claims claims = extractAllClaims(token, SECRET_KEY);
-        return claims.get("roles", List.class); // Extract roles claim
-    }
-
 
     // Get Signing Key
     private Key getSigningKey(String key) {

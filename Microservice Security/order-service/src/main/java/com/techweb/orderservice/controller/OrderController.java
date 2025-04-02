@@ -9,17 +9,16 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')") // ✅ Only ADMIN can access
+    @PreAuthorize("hasRole('ADMIN')") // Only ADMIN can access
     public ResponseEntity<String> getAllOrders() {
         return ResponseEntity.ok("All Orders (Admin Access)");
     }
 
     @GetMapping("/users")
-    @PreAuthorize("hasRole('USER')") // ✅ Only USER can access
+    @PreAuthorize("hasRole('USER')") // Only USER can access
     public ResponseEntity<String> getUserOrders() {
         return ResponseEntity.ok("User Orders");
     }
-
 
     @GetMapping("/test")
     public ResponseEntity<String> testOrderService() {

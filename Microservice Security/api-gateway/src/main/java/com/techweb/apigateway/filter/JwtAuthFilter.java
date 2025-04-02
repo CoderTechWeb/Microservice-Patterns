@@ -1,12 +1,14 @@
 package com.techweb.apigateway.filter;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.List;
 
@@ -41,9 +42,9 @@ public class JwtAuthFilter implements GatewayFilter {
                     .getBody();
 
             String username = claims.getSubject();
-            List<String> roles = claims.get("roles", List.class); // ✅ Extract roles
+            List<String> roles = claims.get("roles", List.class);
 
-            // ✅ Forward roles in headers for microservices
+            // Forward roles in headers for microservices
             exchange.getRequest().mutate()
                     .header(HttpHeaders.AUTHORIZATION, authHeader)
                     .header("X-User", username)
@@ -51,9 +52,16 @@ public class JwtAuthFilter implements GatewayFilter {
                     .build();
 
 
+        } catch (ExpiredJwtException e) {
+            return this.onError(exchange, "JWT Token has expired", HttpStatus.UNAUTHORIZED);
+        } catch (MalformedJwtException e) {
+            return this.onError(exchange, "Invalid JWT Token format", HttpStatus.BAD_REQUEST);
+        } catch (SignatureException e) {
+            return this.onError(exchange, "JWT Signature validation failed", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
-            return this.onError(exchange, "Invalid JWT Token", HttpStatus.UNAUTHORIZED);
+            return this.onError(exchange, "JWT Token validation failed", HttpStatus.UNAUTHORIZED);
         }
+
 
         return chain.filter(exchange);
     }

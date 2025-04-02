@@ -17,8 +17,8 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/order/admin/**").hasRole("ADMIN")  // ✅ Only ADMIN
-                        .requestMatchers("/order/user/**").hasRole("USER")    // ✅ Only USER
+                        .requestMatchers("/order/admin/**").hasRole("ADMIN")  // Only ADMIN
+                        .requestMatchers("/order/user/**").hasRole("USER")    // Only USER
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
