@@ -1,5 +1,6 @@
 package com.techweb.authservice.config;
 
+import com.techweb.authservice.filter.JwtAuthenticationFilter;
 import com.techweb.authservice.repository.UserRepository;
 import com.techweb.authservice.service.OAuth2SuccessHandler;
 import com.techweb.authservice.service.UserService;
