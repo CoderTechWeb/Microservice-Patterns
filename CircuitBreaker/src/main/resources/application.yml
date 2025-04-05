@@ -1,0 +1,51 @@
+spring:
+  application.name: CircuitBreakerDemo
+  jackson.serialization.indent_output: true
+
+management:
+  endpoints.web.exposure.include:
+    - '*'
+  endpoint.health.show-details: always
+  health.circuitbreakers.enabled: true
+
+resilience4j.circuitbreaker:
+  instances:
+    countriesCircuitBreaker:
+      slidingWindowType: count_based   # Can be time_based or count_based (default: count_based)
+      slidingWindowSize: 5            # Last 10 calls used for failure rate calculation
+      minimumNumberOfCalls: 3          # At least 5 calls before evaluating failure rate
+      failureRateThreshold: 50         # Circuit opens if 50% of calls fail
+      slowCallRateThreshold: 50        # Circuit opens if 50% of calls are slow
+      slowCallDurationThreshold: 5s    # A call is slow if it exceeds 2s
+      permittedNumberOfCallsInHalfOpenState: 2  # Allow 2 calls when in HALF-OPEN state
+      automaticTransitionFromOpenToHalfOpenEnabled: true  # Auto transition to HALF-OPEN
+      waitDurationInOpenState: 10s     # Stay OPEN for 30s before transitioning to HALF-OPEN
+      recordExceptions:
+        - java.lang.Exception
+      ignore-exceptions:
+        - java.io.FileNotFoundException
+
+resilience4j.retry:
+  instances:
+    countriesRetry:
+      maxAttempts: 3            # Retry up to 2 times before failing
+      waitDuration: 2s          # Wait 2s before each retry
+      retryExceptions:
+        - java.lang.Exception
+      ignoreExceptions:
+        - java.io.FileNotFoundException   # Do not retry for specific exceptions
+
+resilience4j.bulkhead:
+  instances:
+    countriesBulkhead:
+      maxConcurrentCalls: 2   # Only allow 2 concurrent requests
+      maxWaitDuration: 10s     # Wait max 1s if bulkhead is full before rejecting
+
+resilience4j.ratelimiter:
+  instances:
+    countriesRateLimiter:
+      limitForPeriod: 3         # Allow max 3 requests per refresh period
+      limitRefreshPeriod: 20s   # Refresh the limit every 20 seconds
+      timeoutDuration: 0        # Do not wait for the next slot; reject immediately
+
+
